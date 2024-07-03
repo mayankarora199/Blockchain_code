@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Certificate {
+    struct CertificateData {
+        string name;
+        string course;
+        string grade;
+        string date;
+    }
+
+    mapping(uint256 => CertificateData) private certificates;
+    uint256 private certificateCounter;
+
+    // Event to be emitted when a new certificate is issued
+    event CertificateIssued(uint256 certificateId, string name, string course, string grade, string date);
+
+    // Function to issue a new certificate
+    function issueCertificate(string memory _name, string memory _course, string memory _grade, string memory _date) public {
+        certificateCounter++;
+        certificates[certificateCounter] = CertificateData(_name, _course, _grade, _date);
+        emit CertificateIssued(certificateCounter, _name, _course, _grade, _date);
+    }
+
+    // Function to read certificate details by ID
+    function getCertificate(uint256 _certificateId) public view returns (string memory, string memory, string memory, string memory) {
+        require(_certificateId > 0 && _certificateId <= certificateCounter, "Certificate ID is invalid.");
+        CertificateData memory cert = certificates[_certificateId];
+        return (cert.name, cert.course, cert.grade, cert.date);
+    }
+}
